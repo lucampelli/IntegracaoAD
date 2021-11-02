@@ -21,6 +21,7 @@ import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +64,25 @@ public class HomeResource {
 			b.add(t[0],t[1]);
 		}
 		b.add("CN",p.getFullName());
+		
+		return (Name)b.build();
+	}
+	
+	public Name buildPersonDn(String structure, String fullName) {
+		System.out.println(structure);
+		System.out.println(fullName);
+
+		String[] struc = structure.split(",");
+		LdapNameBuilder b = LdapNameBuilder.newInstance();
+		System.out.println(struc.length);
+		System.out.println(struc[0]);	
+		for(int i = struc.length -1; i >=0; i--) {
+			System.out.println(struc[i]);
+
+			String[] t = struc[i].split("=");
+			b.add(t[0],t[1]);
+		}
+		b.add("CN",fullName);
 		
 		return (Name)b.build();
 	}
@@ -121,57 +141,117 @@ public class HomeResource {
 		return new ResponseEntity<List<Person>>(ldapTemplate.search(query, mapper),HttpStatus.OK);
 	}
 	
-	@PutMapping("/employee")
-	public String add(@RequestBody Person data) {
-		
-		System.out.println(data.toString());
-		
-		Attributes attrs = new BasicAttributes();
-		BasicAttribute ocattr = new BasicAttribute("objectclass");
-		ocattr.add("top");
-		ocattr.add("person");
-		ocattr.add("organizationalPerson");
-		ocattr.add("user");
-		
-		attrs.put(ocattr);
-		
-		attrs.put("cn", data.getFullName());
-		attrs.put("givenName", data.getFirstName());
-		attrs.put("sn", data.getLastName());
-		attrs.put("name",data.getDisplayName());
+	@GetMapping("/employee/{username}")
+	public ResponseEntity<Person> queryone(@PathVariable(value="username") String username) {
+		LdapQuery query = query().base("").attributes("sn","distinguishedName","sAMAccountName","userPassword","givenName","displayName","telephoneNumber","department","company","mail","manager","streetAddress","description","title").where("objectclass")
+				.is("person").and("sAMAccountName").like(username);
+		AttributesMapper<Person> mapper = new AttributesMapper<Person>() {
+			
+			public Person mapFromAttributes(Attributes attrs) throws javax.naming.NamingException {
+				NamingEnumeration<? extends Attribute> attributes = attrs.getAll();
+				System.out.println(attrs.size());
+				Person ret = new Person();
+				
+				ArrayList<String> s = new ArrayList<String> (List.of((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(",")));
+				System.out.println(s);
+				if(s.size() > 1) {
+					s.remove(0);
+					s.remove(s.size()-1);
+					s.remove(s.size()-1);
+					s.remove(s.size()-1);
+				}
 
-		attrs.put("displayName",data.getDisplayName());
-		attrs.put("telephoneNumber",data.getTelefone());
-		attrs.put("department",data.getDepartment());
+				ret.setStructure(String.join(",",(String[])s.toArray(new String[0])));
+				
+				ret.setFirstName(null != attrs.get("givenName") ? (String) attrs.get("givenName").get() : "");
+				ret.setLastName(null != attrs.get("sn") ? (String) attrs.get("sn").get() : "");
+				ret.setDisplayName(null != attrs.get("displayName") ? (String) attrs.get("displayName").get() : "");
+
+				ret.setTelefone(null != attrs.get("telephoneNumber") ? (String) attrs.get("telephoneNumber").get() : "");
+				ret.setDepartment(null != attrs.get("department") ? (String) attrs.get("department").get() : "");
+				ret.setCompany(null != attrs.get("company") ? (String) attrs.get("company").get() : "");
+				
+				ret.setUserName(null != attrs.get("sAMAccountName") ? (String) attrs.get("sAMAccountName").get() : "");
+				ret.setEmail(null != attrs.get("mail") ? (String) attrs.get("mail").get() : "");
+				ret.setManager(null != attrs.get("manager") ? (String) attrs.get("manager").get() : "");
+
+				ret.setAddress(null != attrs.get("streetAddress") ? (String) attrs.get("streetAddress").get() : "");
+				ret.setDescription(null != attrs.get("description") ? (String) attrs.get("description").get() : "");
+				ret.setJob(null != attrs.get("title") ? (String) attrs.get("title").get() : "");
+				
+				return ret;
+			}
+		};
 		
-		attrs.put("sAMAccountType","805306368");
-		
-		attrs.put("company",data.getCompany());
-		attrs.put("mail",data.getEmail());
-		attrs.put("manager",data.getManager());
-		
-		attrs.put("streetAddress",data.getAddress());
-		attrs.put("description",data.getDescription());
-		attrs.put("title",data.getJob());
-		
-		attrs.put("userPrincipalName",data.getEmail());
-		
-		attrs.put("mailNickname",data.getEmail().split("@")[0]);
-		
-		attrs.put("sAMAccountName", data.getUserName());
-		
-		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructure() + "," + Base);
-		
-		Name dn = buildPersonDn(data);
-		
-		System.out.println(dn.toString());
-		
-		ldapTemplate.bind(dn,null,attrs);
-		return data.toString();
+		if(ldapTemplate.search(query, mapper).size() > 0) {
+			return new ResponseEntity<Person>(ldapTemplate.search(query, mapper).get(0),HttpStatus.OK);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
 	}
 	
-	@PostMapping("/employee")
-	public String modify(@RequestBody Person data) {
+	@PutMapping("/employee")
+	public ResponseEntity add(@RequestBody Person data) {
+		try {
+			System.out.println(data.toString());
+			
+			Attributes attrs = new BasicAttributes();
+			BasicAttribute ocattr = new BasicAttribute("objectclass");
+			ocattr.add("top");
+			ocattr.add("person");
+			ocattr.add("organizationalPerson");
+			ocattr.add("user");
+			
+			attrs.put(ocattr);
+			
+			attrs.put("cn", data.getFullName());
+			attrs.put("givenName", data.getFirstName());
+			attrs.put("sn", data.getLastName());
+			attrs.put("name",data.getDisplayName());
+	
+			attrs.put("displayName",data.getDisplayName());
+			attrs.put("telephoneNumber",data.getTelefone());
+			attrs.put("department",data.getDepartment());
+			
+			attrs.put("sAMAccountType","805306368");
+			
+			attrs.put("company",data.getCompany());
+			attrs.put("mail",data.getEmail());
+			attrs.put("manager",data.getManager());
+			
+			attrs.put("streetAddress",data.getAddress());
+			attrs.put("description",data.getDescription());
+			attrs.put("title",data.getJob());
+			
+			attrs.put("userPrincipalName",data.getEmail());
+			
+			attrs.put("mailNickname",data.getEmail().split("@")[0]);
+			
+			attrs.put("sAMAccountName", data.getUserName());
+			
+			attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructure() + "," + Base);
+			
+			Name dn = buildPersonDn(data);
+			
+			System.out.println(dn.toString());
+			
+			ldapTemplate.bind(dn,null,attrs);
+		} catch (Exception e) {
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	@PostMapping("/employee/{username}")
+	public ResponseEntity modify(@PathVariable(value="username") String username,@RequestBody Person data) {
+
+		
+		Person original = queryone(username).getBody();
+		
+		
+		if(original == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
 		
 		Attributes attrs = new BasicAttributes();
 		BasicAttribute ocattr = new BasicAttribute("objectclass");
@@ -182,88 +262,194 @@ public class HomeResource {
 		
 		attrs.put(ocattr);
 		
-		attrs.put("cn", data.getFullName());
-		attrs.put("givenName", data.getFirstName());
-		attrs.put("sn", data.getLastName());
-		attrs.put("name",data.getDisplayName());
-
-		attrs.put("displayName",data.getDisplayName());
-		attrs.put("telephoneNumber",data.getTelefone());
-		attrs.put("department",data.getDepartment());
+		String fullName = "";
+		String structure = "";
 		
+		
+		if(data.getFirstName() != "") {
+			fullName += data.getFirstName();
+		} else {
+			fullName += original.getFirstName();
+		}
+		
+		if(fullName != "") {
+			fullName += " ";
+		}
+
+		if(data.getLastName() != "") {
+			fullName += data.getLastName();
+		} else {
+			fullName += original.getLastName();
+		}
+		
+		attrs.put("cn", fullName);
+		
+		if(data.getFirstName() != "") {
+			attrs.put("givenName", data.getFirstName());
+		} else {
+			attrs.put("givenName", original.getFirstName());
+		}
+		
+		if(data.getLastName() != "") {
+			attrs.put("sn", data.getLastName());
+		} else {
+			attrs.put("sn", original.getLastName());
+		}
+		
+		if(data.getDisplayName() != "") {
+			attrs.put("name", data.getDisplayName());
+		} else {
+			attrs.put("name", original.getDisplayName());
+		}
+		
+		if(data.getDisplayName() != "") {
+			attrs.put("displayName", data.getDisplayName());
+		} else {
+			attrs.put("displayName", original.getDisplayName());
+		}
+		
+		if(data.getTelefone() != "") {
+			attrs.put("telephoneNumber", data.getTelefone());
+		} else {
+			attrs.put("telephoneNumber", original.getTelefone());
+		}
+		
+		if(data.getDepartment() != "") {
+			attrs.put("department", data.getDepartment());
+		} else {
+			attrs.put("department", original.getDepartment());
+		}
+		
+		if(data.getCompany() != "") {
+			attrs.put("company", data.getCompany());
+		} else {
+			attrs.put("company", original.getCompany());
+		}
+		
+		if(data.getEmail() != "") {
+			attrs.put("mail", data.getEmail());
+		} else {
+			attrs.put("mail", original.getEmail());
+		}
+		
+		if(data.getManager() != "") {
+			attrs.put("manager", data.getManager());
+		} else {
+			attrs.put("manager", original.getManager());
+		}
+		
+		if(data.getAddress() != "") {
+			attrs.put("streetAddress", data.getAddress());
+		} else {
+			attrs.put("streetAddress", original.getAddress());
+		}
+		
+		if(data.getDescription() != "") {
+			attrs.put("description", data.getDescription());
+		} else {
+			attrs.put("description", original.getDescription());
+		}
+		
+		if(data.getJob() != "") {
+			attrs.put("title", data.getJob());
+		} else {
+			attrs.put("title", original.getJob());
+		}
+		
+		if(data.getUserName() != "") {
+			attrs.put("sAMAccountName", data.getUserName());
+		} else {
+			attrs.put("sAMAccountName", original.getUserName());
+		}
+		
+		if(data.getEmail() != "") {
+			attrs.put("mailNickname", data.getEmail().split("@")[0]);
+		} else {
+			attrs.put("mailNickname", original.getEmail().split("@")[0]);
+		}
+		
+		if(data.getEmail() != "") {
+			attrs.put("userPrincipalName", data.getEmail());
+		} else {
+			attrs.put("userPrincipalName", original.getEmail());
+		}
+		
+		if(data.getStructure() != "") {
+			structure = data.getStructure();
+		} else {
+			structure = original.getStructure();
+		}
+		
+		attrs.put("distinguishedName", "CN=" + fullName + "," + structure + "," + Base);
+
 		attrs.put("sAMAccountType","805306368");
 		
-		attrs.put("company",data.getCompany());
-		attrs.put("mail",data.getEmail());
-		attrs.put("manager",data.getManager());
-		
-		attrs.put("streetAddress",data.getAddress());
-		attrs.put("description",data.getDescription());
-		attrs.put("title",data.getJob());
-		
-		attrs.put("userPrincipalName",data.getEmail());
-		
-		attrs.put("mailNickname",data.getEmail().split("@")[0]);
-		
-		attrs.put("sAMAccountName", data.getUserName());
-		
-		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructure() + "," + Base);
-		
-		Name dn = buildPersonDn(data);
+		Name dn = buildPersonDn(structure,fullName);
 		
 		ldapTemplate.rebind(dn, null, attrs);
 		
-		return data.toString();
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/employee")
-	public String remove(@RequestBody Person data) {
-		Name dn = buildPersonDn(data);
+	@DeleteMapping("/employee/{username}")
+	public ResponseEntity remove(@PathVariable(value="username") String username) {
 		
-		ldapTemplate.unbind(dn);
+		Person original = queryone(username).getBody();
 		
-		Attributes attrs = new BasicAttributes();
-		BasicAttribute ocattr = new BasicAttribute("objectclass");
+		if(original == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
 		
-		ocattr.add("top");
-		ocattr.add("person");
-		ocattr.add("organizationalPerson");
-		ocattr.add("user");
+		try {
+			Name dn = buildPersonDn(original);
+			
+			ldapTemplate.unbind(dn);
+			
+			Attributes attrs = new BasicAttributes();
+			BasicAttribute ocattr = new BasicAttribute("objectclass");
+			
+			ocattr.add("top");
+			ocattr.add("person");
+			ocattr.add("organizationalPerson");
+			ocattr.add("user");
+			
+			attrs.put(ocattr);
+			
+			attrs.put("cn", original.getFullName());
+			attrs.put("givenName", original.getFirstName());
+			attrs.put("sn", original.getLastName());
+			attrs.put("name",original.getDisplayName());
+	
+			attrs.put("displayName",original.getDisplayName());
+			attrs.put("telephoneNumber",original.getTelefone());
+			attrs.put("department",original.getDepartment());
+			
+			attrs.put("sAMAccountType","805306368");
+			
+			attrs.put("company",original.getCompany());
+			attrs.put("mail",original.getEmail());
+			attrs.put("manager",original.getManager());
+			
+			attrs.put("streetAddress",original.getAddress());
+			attrs.put("description",original.getDescription());
+			attrs.put("title",original.getJob());
+			
+			attrs.put("userPrincipalName",original.getEmail());
+			
+			attrs.put("mailNickname",original.getEmail().split("@")[0]);
+			
+			attrs.put("sAMAccountName", original.getUserName());
+			
+			attrs.put("distinguishedName","CN=" + original.getFullName() + "," + "OU=Desabilitado" + "," + Base);
+			
+			dn = buildDisabledDn(original);
+			
+			ldapTemplate.bind(dn,null,attrs);
+		} catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
-		attrs.put(ocattr);
-		
-		attrs.put("cn", data.getFullName());
-		attrs.put("givenName", data.getFirstName());
-		attrs.put("sn", data.getLastName());
-		attrs.put("name",data.getDisplayName());
-
-		attrs.put("displayName",data.getDisplayName());
-		attrs.put("telephoneNumber",data.getTelefone());
-		attrs.put("department",data.getDepartment());
-		
-		attrs.put("sAMAccountType","805306368");
-		
-		attrs.put("company",data.getCompany());
-		attrs.put("mail",data.getEmail());
-		attrs.put("manager",data.getManager());
-		
-		attrs.put("streetAddress",data.getAddress());
-		attrs.put("description",data.getDescription());
-		attrs.put("title",data.getJob());
-		
-		attrs.put("userPrincipalName",data.getEmail());
-		
-		attrs.put("mailNickname",data.getEmail().split("@")[0]);
-		
-		attrs.put("sAMAccountName", data.getUserName());
-		
-		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + "OU=Desabilitado" + "," + Base);
-		
-		dn = buildDisabledDn(data);
-		
-		ldapTemplate.bind(dn,null,attrs);
-		
-		return data.toString();
+		return new ResponseEntity(HttpStatus.OK);
 	}
 	
 	/*

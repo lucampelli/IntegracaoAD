@@ -400,7 +400,7 @@ distinguishedName:
 instanceType: 4
 whenCreated: 20130130134651.0Z
 whenChanged: 20211019204415.0Z
-displayName: Bruno de Melo da Silva
+displayName: Benjamin Alex
 uSNCreated: 48024
 info:: VGVjbm9sb2dpYSBkYSBJbmZvcm1hw6fDo28=
 memberOf: 
@@ -454,7 +454,7 @@ primaryGroupID: 513
 objectSid:: AQUAAAAAAAUVAAAAQTVRRFt5SULSEB25448AAA==
 accountExpires: 0
 logonCount: 8101
-sAMAccountName: t_bmsilva
+sAMAccountName: t_balex
 sAMAccountType: 805306368
 showInAddressBook: 
  CN=Default Global Address List,CN=All Global Address Lists,CN=Address Lists Co
@@ -463,7 +463,7 @@ showInAddressBook:
 legacyExchangeDN: 
  /o=GAFISACT/ou=External (FYDIBOHF25SPDLT)/cn=Recipients/cn=ffc9c48042af44c0a5d
  f2300aca1b164
-userPrincipalName: t_bmsilva@gafisa.com.br
+userPrincipalName: t_balex@gafisa.com.br
 lockoutTime: 0
 objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=GAFISACT,DC=COM,DC=BR
 mSMQSignCertificates:: 
@@ -490,7 +490,7 @@ msTSLicenseVersion: 393216
 msTSManagingLS: 55041-381-2040933-76191
 textEncodedORAddress: 
  X400:C=US;A= ;P=GAFISACT;O=Exchange;S=de Melo da Silva;G=Bruno;
-mail: t_bmsilva@gafisa.com.br
+mail: t_balex@gafisa.com.br
 msExchALObjectVersion: 309
 msExchUserAccountControl: 0
 msExchMailboxGuid:: m1JXJuru40OjdaMao890tg==
@@ -523,12 +523,12 @@ msExchBypassAudit: FALSE
 msExchArchiveWarnQuota: 2097152
 msExchRemoteRecipientType: 4
 msExchRecipientTypeDetails: 2147483648
-msExchShadowProxyAddresses: SMTP:t_bmsilva@gafisa.com.br
-msExchShadowProxyAddresses: smtp:t_bmsilva@gafisavendas.com.br
-msExchShadowProxyAddresses: smtp:t_bmsilva@viverbemgafisa.com.br
+msExchShadowProxyAddresses: SMTP:t_balex@gafisa.com.br
+msExchShadowProxyAddresses: smtp:t_balex@gafisavendas.com.br
+msExchShadowProxyAddresses: smtp:t_balex@viverbemgafisa.com.br
 msExchShadowProxyAddresses: 
  X400:C=US;A= ;P=GAFISACT;O=Exchange;S=de Melo da Silva;G=Bruno;
-msExchShadowProxyAddresses: sip:t_bmsilva@gafisa.com.br
+msExchShadowProxyAddresses: sip:t_balex@gafisa.com.br
 msExchMDBRulesQuota: 64
 msExchDumpsterQuota: 31457280
 msExchMailboxTemplateLink: 

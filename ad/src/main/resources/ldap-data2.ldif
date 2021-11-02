@@ -3,6 +3,11 @@ objectclass: top
 objectclass: domain
 dc: GAFISACT
 
+dn:OU=Desabilitado,DC=GAFISACT,DC=COM,DC=BR
+objectclass: top
+objectclass: group
+ou: Desabilitado
+
 dn:OU=TestFocal,DC=GAFISACT,DC=COM,DC=BR
 objectclass: top
 objectclass: group
@@ -351,9 +356,185 @@ msExchArchiveStatus: 0
 msExchRecipientTypeDetails: 2147483648
 
 dn: CN=Ben Alex,OU=TestFocal,DC=GAFISACT,DC=COM,DC=BR
-objectclass: top
-objectclass: person
+changetype: add
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: user
 cn: Ben Alex
 sn: Alex
-uid: ben
+l:: U8OjbyBQYXVsbw==
+st: - SP
+title: Analista de Infraestrutura
+description: Terceiro
+physicalDeliveryOfficeName: Eldorado Business Tower
+telephoneNumber: +55 11 2626-2860
+userCertificate:: 
+ MIIFdzCCBF+gAwIBAgITEwAAAtfXbkystZSfJgABAAAC1zANBgkqhkiG9w0BAQsFADBQMRIwEAYKCZ
+ ImiZPyLGQBGRYCQlIxEzARBgoJkiaJk/IsZAEZFgNDT00xGDAWBgoJkiaJk/IsZAEZFghHQUZJU0FD
+ VDELMAkGA1UEAxMCQ0EwHhcNMjEwNDIwMTE1MzA5WhcNMjIwNDIwMTE1MzA5WjCBmTESMBAGCgmSJo
+ mT8ixkARkWAkJSMRMwEQYKCZImiZPyLGQBGRYDQ09NMRgwFgYKCZImiZPyLGQBGRYIR0FGSVNBQ1Qx
+ DzANBgNVBAsTBkdhZmlzYTEOMAwGA1UECxMFVXNlcnMxEjAQBgNVBAsTCVRlcmNlaXJvczEfMB0GA1
+ UEAxMWQnJ1bm8gZGUgTWVsbyBkYSBTaWx2YTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAzfWB
+ xQV+1lHcISJ+xbciid2FyLHmWBlO0WWp3MvmzJb+pAREA1m9FHR6sSwPuNblO9cHqv1qhkkAS7qryy
+ aMHN7siteklyqB7UT7rLPa3JXeDuxnBdvDDh1q8qsc0W3a+Qg5RdQ/WmsbT3JdiZhgen3IKH/sV8Sa
+ wKrMbEyvmfECAwEAAaOCAoIwggJ+MBUGCSsGAQQBgjcUAgQIHgYARQBGAFMwFQYDVR0lBA4wDAYKKw
+ YBBAGCNwoDBDALBgNVHQ8EBAMCBSAwRAYJKoZIhvcNAQkPBDcwNTAOBggqhkiG9w0DAgICAIAwDgYI
+ KoZIhvcNAwQCAgCAMAcGBSsOAwIHMAoGCCqGSIb3DQMHMDIGA1UdEQQrMCmgJwYKKwYBBAGCNxQCA6
+ AZDBd0X2Jtc2lsdmFAZ2FmaXNhLmNvbS5icjAdBgNVHQ4EFgQUpx1euIj94vGhQxWQ+RN+0xnRGlww
+ HwYDVR0jBBgwFoAUjTXy4AN3Rm/7oiDRbc3lKiP/9EcwgcgGA1UdHwSBwDCBvTCBuqCBt6CBtIaBsW
+ xkYXA6Ly8vQ049Q0EoMSksQ049U1NQQ0EsQ049Q0RQLENOPVB1YmxpYyUyMEtleSUyMFNlcnZpY2Vz
+ LENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9R0FGSVNBQ1QsREM9Q09NLERDPUJSP2Nlcn
+ RpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT9vYmplY3RDbGFzcz1jUkxEaXN0cmlidXRpb25Qb2lu
+ dDCBuwYIKwYBBQUHAQEEga4wgaswgagGCCsGAQUFBzAChoGbbGRhcDovLy9DTj1DQSxDTj1BSUEsQ0
+ 49UHVibGljJTIwS2V5JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1H
+ QUZJU0FDVCxEQz1DT00sREM9QlI/Y0FDZXJ0aWZpY2F0ZT9iYXNlP29iamVjdENsYXNzPWNlcnRpZm
+ ljYXRpb25BdXRob3JpdHkwDQYJKoZIhvcNAQELBQADggEBAJ75roPOLcEHMbB0h0584PHqqHWsBNXC
+ mk34QvBNfajMH19Fb+Lhfed8vjjU4rebZMl+c5MoeI0cjOuWpZT2D9pNz49ZIDOX0uM8KpkOtFlgLH
+ Dz6w0zmlyc5bA7wGRhCpTtHvdMPpwVYSr+9K+yyx9d0WbGLHI8P/VMDOmnLmsZcrtvgLs6Wo75NvId
+ GvgVFKwWfHs1gOKgC1gHbal8TnLwCrIszHr2wpJGcEkwvruzL4nM4EgVx5O4pUovhDYAyktW9hEdsQ
+ Lhd9CDqmACOAaNwKGxdxPpc2qKaJaj23rbNzLdjNsQ1zgR83PTptVI6FpulQWS2AOwznuJ7slUylc=
+givenName: Ben
+distinguishedName: 
+ CN=Ben Alex,OU=TestFocal,DC=GAFISACT,DC=COM,DC=BR
+instanceType: 4
+whenCreated: 20130130134651.0Z
+whenChanged: 20211019204415.0Z
+displayName: Bruno de Melo da Silva
+uSNCreated: 48024
+info:: VGVjbm9sb2dpYSBkYSBJbmZvcm1hw6fDo28=
+memberOf: 
+ CN=GG-GFSAFS01-MF-TI,OU=FileServer,OU=Grupos,OU=Gafisa,DC=GAFISACT,DC=COM,DC=B
+ R
+memberOf: CN=AWS Ecommerce,OU=Distribution,OU=Group,DC=GAFISACT,DC=COM,DC=BR
+memberOf: 
+ CN=GG-Administradores-Locais,OU=Delegate Control,DC=GAFISACT,DC=COM,DC=BR
+memberOf: CN=TI Processor,OU=Distribution,OU=Group,DC=GAFISACT,DC=COM,DC=BR
+memberOf: 
+ CN=TI - Infraestrutura,OU=Distribution,OU=Group,DC=GAFISACT,DC=COM,DC=BR
+memberOf: CN=VPN_FORTINET,OU=Security,OU=Group,DC=GAFISACT,DC=COM,DC=BR
+uSNChanged: 76747585
+delivContLength: 10240
+company: Focal Data
+proxyAddresses: 
+ x500:/o=GAFISACT/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipie
+ nts/cn=Bruno de Melo da Silvabf8
+proxyAddresses: smtp:t_bmsilva@gafisaempreendimentos.mail.onmicrosoft.com
+proxyAddresses: SMTP:t_bmsilva@gafisa.com.br
+proxyAddresses: smtp:t_bmsilva@gafisarelacionamento.com.br
+proxyAddresses: 
+ X500:/o=ExchangeLabs/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Rec
+ ipients/cn=ce884cf658674635b300578c421d61ba-Bruno de Me
+proxyAddresses: smtp:t_bmsilva@gafisavendas.com.br
+proxyAddresses: 
+ X400:C=US;A= ;P=GAFISACT;O=Exchange;S=de Melo da Silva;G=Bruno;
+streetAddress:: 
+ QXYuIEp1c2NlbGlubyBLdWJpdHNjaGVrIDE4MzAgfDAzwrogYW5kYXJ8IENvbmouIDMyIFRvcnJlID
+ IgLSBDb25kLiBTw6NvIEx1aXo=
+submissionContLength: 10240
+garbageCollPeriod: 1209600
+targetAddress: SMTP:t_bmsilva@gafisaempreendimentos.mail.onmicrosoft.com
+extensionAttribute2: gafisa
+mailNickname: t_bmsilva
+protocolSettings:: UmVtb3RlUG93ZXJTaGVsbMKnMQ==
+internetEncoding: 0
+name: Bruno de Melo da Silva
+objectGUID:: QhqNHVmkq02+0+XAw09wZA==
+userAccountControl: 512
+badPwdCount: 0
+codePage: 0
+countryCode: 0
+badPasswordTime: 132793018879033527
+lastLogoff: 0
+lastLogon: 132797224068096469
+scriptPath: ADSelfService_Enroll.hta
+logonHours:: ////////////////////////////
+pwdLastSet: 132775645401363377
+primaryGroupID: 513
+objectSid:: AQUAAAAAAAUVAAAAQTVRRFt5SULSEB25448AAA==
+accountExpires: 0
+logonCount: 8101
+sAMAccountName: t_bmsilva
+sAMAccountType: 805306368
+showInAddressBook: 
+ CN=Default Global Address List,CN=All Global Address Lists,CN=Address Lists Co
+ ntainer,CN=GAFISACT,CN=Microsoft Exchange,CN=Services,CN=Configuration,DC=GAFI
+ SACT,DC=COM,DC=BR
+legacyExchangeDN: 
+ /o=GAFISACT/ou=External (FYDIBOHF25SPDLT)/cn=Recipients/cn=ffc9c48042af44c0a5d
+ f2300aca1b164
+userPrincipalName: t_bmsilva@gafisa.com.br
+lockoutTime: 0
+objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=GAFISACT,DC=COM,DC=BR
+mSMQSignCertificates:: 
+ AQAAAKyxcWnyDnv7cztoXuXcgjgoj+DCsMrWTqD9ezynEK630QEAADCCAc0wggF3oAMCAQICBKqlWl
+ UwDAYIKoZIhvcNAgUFADBuMREwDwYDVQQHHggATQBTAE0AUTELMAkGA1UECh4CAC0xCzAJBgNVBAse
+ AgAtMT8wPQYDVQQDHjYARwBBAEYASQBTAEEAQwBUAFwAdABfAGIAbQBzAGkAbAB2AGEALAAgAGcAMA
+ AwADAAOAA4ADAwHhcNMTMwNDE5MjAyOTExWhcNMjEwNDE5MjAyOTExWjBuMREwDwYDVQQHHggATQBT
+ AE0AUTELMAkGA1UECh4CAC0xCzAJBgNVBAseAgAtMT8wPQYDVQQDHjYARwBBAEYASQBTAEEAQwBUAF
+ wAdABfAGIAbQBzAGkAbAB2AGEALAAgAGcAMAAwADAAOAA4ADAwXDANBgkqhkiG9w0BAQEFAANLADBI
+ AkEAo6OQqbtWnjqhoLJNQMTgL6m+VVyVs5V6LB/ywwxAC8H902Nb+ZNkMSUmF/ZB5jGN4v78vO/2Zp
+ j76sMgn51ouQIDAQABMA0GCSqGSIb3DQEBBAUAA0EAHIIQ73mS532YvK4dbqnX51u78lcOgGPlERrw
+ wQQ6o/SFEE0DbVGkzs5qL93PJT7gOCE0WNM9NjeUBSAlfP8rKA==
+mSMQDigests:: rLFxafIOe/tzO2he5dyCOA==
+dSCorePropagationData: 20211015161403.0Z
+dSCorePropagationData: 20191007142427.0Z
+dSCorePropagationData: 20191007141057.0Z
+dSCorePropagationData: 20191002190504.0Z
+dSCorePropagationData: 16010714223649.0Z
+mS-DS-ConsistencyGuid:: QhqNHVmkq02+0+XAw09wZA==
+lastLogonTimestamp: 132791494729832138
+msDS-SupportedEncryptionTypes: 0
+msTSExpireDate: 20190612202106.0Z
+msTSLicenseVersion: 393216
+msTSManagingLS: 55041-381-2040933-76191
+textEncodedORAddress: 
+ X400:C=US;A= ;P=GAFISACT;O=Exchange;S=de Melo da Silva;G=Bruno;
+mail: t_bmsilva@gafisa.com.br
+msExchALObjectVersion: 309
+msExchUserAccountControl: 0
+msExchMailboxGuid:: m1JXJuru40OjdaMao890tg==
+msExchPoliciesExcluded: {26491cfc-9e50-4857-861b-0cb8df22b5d7}
+msExchELCMailboxFlags: 10
+msExchMailboxAuditLogAgeLimit: 7776000
+msExchSafeSendersHash:: SQYxKM0LfkX5bOxoOfMMcpLISXYmJ/eISqtH459+M+4=
+msExchVersion: 88218628259840
+msExchArchiveGUID:: heMAiFxF8kCPJGEt5o/atA==
+msExchAddressBookFlags: 1
+msExchLitigationHoldDate: 20170308203820.0Z
+msExchUserHoldPolicies: 98E9BABD09A04bcf8455A58C2AA74182
+msExchTransportRecipientSettingsFlags: 0
+msExchTextMessagingState: 16842751
+msExchTextMessagingState: 302120705
+msExchBlockedSendersHash:: 5Yqhow==
+msExchArchiveName: Personal Archive - Bruno de Melo da Silva
+msExchModerationFlags: 6
+msExchUMDtmfMap: emailAddress:82674582
+msExchUMDtmfMap: reversedPhone:824383531155+
+msExchUMDtmfMap: reversedPhone:00000000
+msExchUMDtmfMap: lastNameFirstName:336356327458227866
+msExchUMDtmfMap: firstNameLastName:278663363563274582
+msExchRecipientDisplayType: -2147483642
+msExchWhenMailboxCreated: 20130130134650.0Z
+msExchProvisioningFlags: 0
+msExchArchiveQuota: 3072000
+msExchDisabledArchiveGUID:: 1lCXRlLJPUyFoZG9XxaF7w==
+msExchBypassAudit: FALSE
+msExchArchiveWarnQuota: 2097152
+msExchRemoteRecipientType: 4
+msExchRecipientTypeDetails: 2147483648
+msExchShadowProxyAddresses: SMTP:t_bmsilva@gafisa.com.br
+msExchShadowProxyAddresses: smtp:t_bmsilva@gafisavendas.com.br
+msExchShadowProxyAddresses: smtp:t_bmsilva@viverbemgafisa.com.br
+msExchShadowProxyAddresses: 
+ X400:C=US;A= ;P=GAFISACT;O=Exchange;S=de Melo da Silva;G=Bruno;
+msExchShadowProxyAddresses: sip:t_bmsilva@gafisa.com.br
+msExchMDBRulesQuota: 64
+msExchDumpsterQuota: 31457280
+msExchMailboxTemplateLink: 
+ CN=Archive Police,CN=Retention Policies Container,CN=GAFISACT,CN=Microsoft Exc
+ hange,CN=Services,CN=Configuration,DC=GAFISACT,DC=COM,DC=BR
+msExchMailboxAuditEnable: FALSE
+msExchUMEnabledFlags2: -1
+msExchDumpsterWarningQuota: 20971520
 userPassword: $2a$10$c6bSeWPhg06xB1lvmaWNNe4NROmZiSpYhlocU/98HNr2MhIOiSt36

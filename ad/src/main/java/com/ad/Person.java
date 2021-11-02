@@ -4,7 +4,7 @@ public class Person {
 	protected String FirstName;
 	protected String LastName;
 	protected String DisplayName;
-	protected String StructureAD;
+	protected String Structure;
 	protected String UserName;
 	protected String Email;
 	protected String Telefone;
@@ -20,7 +20,7 @@ public class Person {
 		FirstName = "";
 		LastName = "";
 		DisplayName = "";
-		StructureAD = "";
+		Structure = "";
 		UserName = "";
 		Email = "";
 		Telefone = "";
@@ -33,13 +33,13 @@ public class Person {
 		Address = "";
 	}
 	
-	public Person(String firstName, String lastName, String displayName, String structureAD, String userName,
+	public Person(String firstName, String lastName, String displayName, String structure, String userName,
 			String email, String telefone, String personNumber, String department, String titleCargo,
 			String description, String company, String manager, String address) {
 		FirstName = firstName;
 		LastName = lastName;
 		DisplayName = displayName;
-		StructureAD = structureAD;
+		Structure = structure;
 		UserName = userName;
 		Email = email;
 		Telefone = telefone;
@@ -74,12 +74,20 @@ public class Person {
 	public void setDisplayName(String displayName) {
 		DisplayName = displayName;
 	}
-	public String getStructureAD() {
-		return StructureAD;
+	public String getStructure() {
+		return Structure;
 	}
-	public void setStructureAD(String structureAD) {
-		StructureAD = structureAD;
+	public void setStructure(String structure) {
+		Structure = structure;
 	}
+	@Override
+	public String toString() {
+		return "Person [FirstName=" + FirstName + ", LastName=" + LastName + ", DisplayName=" + DisplayName
+				+ ", Structure=" + Structure + ", UserName=" + UserName + ", Email=" + Email + ", Telefone=" + Telefone
+				+ ", PersonNumber=" + PersonNumber + ", Department=" + Department + ", Job=" + Job + ", Description="
+				+ Description + ", Company=" + Company + ", Manager=" + Manager + ", Address=" + Address + "]";
+	}
+
 	public String getUserName() {
 		return UserName;
 	}

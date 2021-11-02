@@ -2,6 +2,7 @@ package com.ad;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.Name;
@@ -10,8 +11,6 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.ModificationItem;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +19,10 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.support.LdapNameBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,11 +50,15 @@ public class HomeResource {
 	}
 	
 	public Name buildPersonDn(Person p) {
-		
-		String[] struc = p.getStructureAD().split(",");
-		LdapNameBuilder b = LdapNameBuilder.newInstance("DC=GAFISACT,DC=COM,DC=BR");
-		
+		System.out.println(p.getStructure());
+
+		String[] struc = p.getStructure().split(",");
+		LdapNameBuilder b = LdapNameBuilder.newInstance();
+		System.out.println(struc.length);
+		System.out.println(struc[0]);	
 		for(int i = struc.length -1; i >=0; i--) {
+			System.out.println(struc[i]);
+
 			String[] t = struc[i].split("=");
 			b.add(t[0],t[1]);
 		}
@@ -67,10 +67,9 @@ public class HomeResource {
 		return (Name)b.build();
 	}
 	
-public Name buildDisabledDn(Person p) {
-		
-		String[] struc = p.getStructureAD().split(",");
-		LdapNameBuilder b = LdapNameBuilder.newInstance("DC=GAFISACT,DC=COM,DC=BR");
+	public Name buildDisabledDn(Person p) {
+		String[] struc = p.getStructure().split(",");
+		LdapNameBuilder b = LdapNameBuilder.newInstance();
 		
 		b.add("OU","Desabilitado");
 		b.add("CN",p.getFullName());
@@ -89,12 +88,16 @@ public Name buildDisabledDn(Person p) {
 				System.out.println(attrs.size());
 				Person ret = new Person();
 				
-				List<String> s = List.of((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(","));
-				s.remove(0);
-				s.remove(s.size()-1);
-				s.remove(s.size()-1);
-				s.remove(s.size()-1);
-				ret.setStructureAD(String.join(",",(String[])s.toArray()));
+				ArrayList<String> s = new ArrayList<String> (List.of((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(",")));
+				System.out.println(s);
+				if(s.size() > 1) {
+					s.remove(0);
+					s.remove(s.size()-1);
+					s.remove(s.size()-1);
+					s.remove(s.size()-1);
+				}
+
+				ret.setStructure(String.join(",",(String[])s.toArray(new String[0])));
 				
 				ret.setFirstName(null != attrs.get("givenName") ? (String) attrs.get("givenName").get() : "");
 				ret.setLastName(null != attrs.get("sn") ? (String) attrs.get("sn").get() : "");
@@ -120,6 +123,8 @@ public Name buildDisabledDn(Person p) {
 	
 	@PutMapping("/employee")
 	public String add(@RequestBody Person data) {
+		
+		System.out.println(data.toString());
 		
 		Attributes attrs = new BasicAttributes();
 		BasicAttribute ocattr = new BasicAttribute("objectclass");
@@ -155,7 +160,7 @@ public Name buildDisabledDn(Person p) {
 		
 		attrs.put("sAMAccountName", data.getUserName());
 		
-		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructureAD() + "," + Base);
+		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructure() + "," + Base);
 		
 		Name dn = buildPersonDn(data);
 		
@@ -202,7 +207,7 @@ public Name buildDisabledDn(Person p) {
 		
 		attrs.put("sAMAccountName", data.getUserName());
 		
-		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructureAD() + "," + Base);
+		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructure() + "," + Base);
 		
 		Name dn = buildPersonDn(data);
 		
@@ -252,7 +257,7 @@ public Name buildDisabledDn(Person p) {
 		
 		attrs.put("sAMAccountName", data.getUserName());
 		
-		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructureAD() + "," + Base);
+		attrs.put("distinguishedName","CN=" + data.getFullName() + "," + "OU=Desabilitado" + "," + Base);
 		
 		dn = buildDisabledDn(data);
 		

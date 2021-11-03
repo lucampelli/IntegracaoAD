@@ -7,7 +7,7 @@ public class Person {
 	protected String Structure;
 	protected String UserName;
 	protected String Email;
-	protected String Telefone;
+	protected String TelephoneNumber;
 	protected String PersonNumber;
 	protected String Department;
 	protected String Job;
@@ -15,15 +15,49 @@ public class Person {
 	protected String Company;
 	protected String Manager;
 	protected String Address;
+	protected String RG;
+	protected String CPF;
+	protected String OfficeState;
+	protected String OfficeCity;
+	protected String Function;
+	protected String BirthDate;
+
+	public Person(String firstName, String lastName, String displayName, String structure, String userName,
+			String email, String telephoneNumber, String personNumber, String department, String job, String description,
+			String company, String manager, String address, String rg, String cpf, String officeState,
+			String officeCity, String function, String birthDate) {
+		super();
+		FirstName = firstName;
+		LastName = lastName;
+		DisplayName = displayName;
+		Structure = structure;
+		UserName = userName;
+		Email = email;
+		TelephoneNumber = telephoneNumber;
+		PersonNumber = personNumber;
+		Department = department;
+		Job = job;
+		Description = description;
+		Company = company;
+		Manager = manager;
+		Address = address;
+		RG = rg;
+		CPF = cpf;
+		OfficeState = officeState;
+		OfficeCity = officeCity;
+		Function = function;
+		BirthDate = birthDate;
+	}
 	
 	public Person() {
+		super();
 		FirstName = "";
 		LastName = "";
 		DisplayName = "";
 		Structure = "";
 		UserName = "";
 		Email = "";
-		Telefone = "";
+		TelephoneNumber = "";
 		PersonNumber = "";
 		Department = "";
 		Job = "";
@@ -31,27 +65,23 @@ public class Person {
 		Company = "";
 		Manager = "";
 		Address = "";
+		RG = "";
+		CPF = "";
+		OfficeState = "";
+		OfficeCity = "";
+		Function = "";
+	}	
+
+	@Override
+	public String toString() {
+		return "Person [FirstName=" + FirstName + ", LastName=" + LastName + ", DisplayName=" + DisplayName
+				+ ", Structure=" + Structure + ", UserName=" + UserName + ", Email=" + Email + ", Telefone=" + TelephoneNumber
+				+ ", PersonNumber=" + PersonNumber + ", Department=" + Department + ", Job=" + Job + ", Description="
+				+ Description + ", Company=" + Company + ", Manager=" + Manager + ", Address=" + Address + ", RG=" + RG
+				+ ", CPF=" + CPF + ", OfficeState=" + OfficeState + ", OfficeCity=" + OfficeCity + ", Function="
+				+ Function + ", BirthDate=" + BirthDate + ", FormaExib=" + "]";
 	}
-	
-	public Person(String firstName, String lastName, String displayName, String structure, String userName,
-			String email, String telefone, String personNumber, String department, String titleCargo,
-			String description, String company, String manager, String address) {
-		FirstName = firstName;
-		LastName = lastName;
-		DisplayName = displayName;
-		Structure = structure;
-		UserName = userName;
-		Email = email;
-		Telefone = telefone;
-		PersonNumber = personNumber;
-		Department = department;
-		Job = titleCargo;
-		Description = description;
-		Company = company;
-		Manager = manager;
-		Address = address;
-	}
-	
+
 	public String getFullName() {
 		return FirstName + " " + LastName;
 	}
@@ -80,14 +110,6 @@ public class Person {
 	public void setStructure(String structure) {
 		Structure = structure;
 	}
-	@Override
-	public String toString() {
-		return "Person [FirstName=" + FirstName + ", LastName=" + LastName + ", DisplayName=" + DisplayName
-				+ ", Structure=" + Structure + ", UserName=" + UserName + ", Email=" + Email + ", Telefone=" + Telefone
-				+ ", PersonNumber=" + PersonNumber + ", Department=" + Department + ", Job=" + Job + ", Description="
-				+ Description + ", Company=" + Company + ", Manager=" + Manager + ", Address=" + Address + "]";
-	}
-
 	public String getUserName() {
 		return UserName;
 	}
@@ -100,11 +122,11 @@ public class Person {
 	public void setEmail(String email) {
 		Email = email;
 	}
-	public String getTelefone() {
-		return Telefone;
+	public String getTelephoneNumber() {
+		return TelephoneNumber;
 	}
-	public void setTelefone(String telefone) {
-		Telefone = telefone;
+	public void setTelephoneNumber(String telephoneNumber) {
+		TelephoneNumber = telephoneNumber;
 	}
 	public String getPersonNumber() {
 		return PersonNumber;
@@ -148,5 +170,53 @@ public class Person {
 	public void setAddress(String address) {
 		Address = address;
 	}
+
+	public String getRG() {
+		return RG;
+	}
+
+	public void setRG(String rG) {
+		RG = rG;
+	}
+
+	public String getCPF() {
+		return CPF;
+	}
+
+	public void setCPF(String cPF) {
+		CPF = cPF;
+	}
+
+	public String getOfficeState() {
+		return OfficeState;
+	}
+
+	public void setOfficeState(String officeState) {
+		OfficeState = officeState;
+	}
+
+	public String getOfficeCity() {
+		return OfficeCity;
+	}
+
+	public void setOfficeCity(String officeCity) {
+		OfficeCity = officeCity;
+	}
+
+	public String getFunction() {
+		return Function;
+	}
+
+	public void setFunction(String function) {
+		Function = function;
+	}
+
+	public String getBirthDate() {
+		return BirthDate;
+	}
+
+	public void setBirthDate(String birthDate) {
+		BirthDate = birthDate;
+	}	
 	
 }

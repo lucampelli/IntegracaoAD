@@ -3,51 +3,85 @@ package com.ad;
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.naming.Name;
 import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.ModificationItem;
+import javax.naming.directory.DirContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.DefaultTlsDirContextAuthenticationStrategy;
+import org.springframework.ldap.core.support.DirContextAuthenticationStrategy;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.support.LdapNameBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 public class HomeResource {
 	
-	LdapTemplate ldapTemplate = setLdapTemplate();
+	
+	@Autowired
+    private Environment env;
+	
+	LdapTemplate ldapTemplate = null;
 	String Base = "DC=GAFISACT,DC=COM,DC=BR";
 
 	
 	public LdapTemplate setLdapTemplate() {
+		
+		System.out.println("Setting Certificate Trust Store");
+		System.setProperty("javax.debug", "ssl");
+        System.setProperty("javax.net.ssl.trustStore", "/app/cacerts.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword","changeit");
+        System.out.println(System.getProperty("javax.net.ssl.trustStore"));
 		LdapContextSource contextSource = new LdapContextSource();
-        contextSource.setUrl("ldap://localhost:8389");
+		
+        //contextSource.setUrls(new String[]{"ldaps://SSPDC-01.gafisact.com.br:636","ldaps://SSPDC-02.gafisact.com.br:636"});
+
+		contextSource.setUrl("ldap://localhost:8389");
         contextSource.setBase("DC=GAFISACT,DC=COM,DC=BR");
+        
+        //contextSource.setUserDn(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"));
+        //contextSource.setPassword(env.getProperty("spring.ldap.password"));
+        
         contextSource.afterPropertiesSet();
         LdapTemplate ldapTemplate = new LdapTemplate(contextSource);
+
         try {
+        	System.out.println("Authentication");
+        	System.out.println(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"));
+
+            contextSource.getContext(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"), env.getProperty("spring.ldap.password"));
+        	
             ldapTemplate.afterPropertiesSet();
+                       
         } catch (Exception e) {
             System.out.print("Failed to initialize ldaptemplate "); e.printStackTrace();
-            return null;
+            System.exit(-1);
         }
+        
         return ldapTemplate;
 	}
 	
@@ -98,19 +132,24 @@ public class HomeResource {
 		return (Name)b.build();
 	}
 
+	@RequestMapping("/")
+	public ResponseEntity test() {
+		System.out.println("TEST");
+		return new ResponseEntity(HttpStatus.OK);
+	}
 
 	@GetMapping("/employee")
 	public ResponseEntity<List<Person>> queryall() {
-		LdapQuery query = query().base("").attributes("sn","distinguishedName","sAMAccountName","userPassword","givenName","displayName","telephoneNumber","department","company","mail","manager","streetAddress","description","title","l","st","info","wWWHomePage","postOfficeBox","pager").where("objectclass").is("person");
+		LdapQuery query = query().base("").attributes("sn","distinguishedName","sAMAccountName","userPassword","givenName","displayName","telephoneNumber","department","company","mail","manager","streetAddress","description","title","l","st","info","wWWHomePage","postOfficeBox","pager","physicalDeliveryOfficeName").where("objectclass").is("person");
 		AttributesMapper<Person> mapper = new AttributesMapper<Person>() {
 			
 			public Person mapFromAttributes(Attributes attrs) throws javax.naming.NamingException {
 				NamingEnumeration<? extends Attribute> attributes = attrs.getAll();
-				System.out.println(attrs.size());
+				//System.out.println(attrs.size());
 				Person ret = new Person();
 				
-				ArrayList<String> s = new ArrayList<String> (List.of((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(",")));
-				System.out.println(s);
+				ArrayList<String> s = new ArrayList<String> (Arrays.asList((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(",")));
+				//System.out.println(s);
 				if(s.size() > 1) {
 					s.remove(0);
 					s.remove(s.size()-1);
@@ -144,24 +183,30 @@ public class HomeResource {
 				ret.setBirthDate(null != attrs.get("pager") ? (String) attrs.get("pager").get() : "");
 				ret.setFunction(null != attrs.get("title") ? (String) attrs.get("title").get() : "");
 				
+				ret.setLocationCode(null != attrs.get("physicalDeliveryOfficeName") ? (String) attrs.get("physicalDeliveryOfficeName").get() : "");
+				
 				return ret;
 			}
 		};
+		
+		if(ldapTemplate == null) {
+			ldapTemplate = setLdapTemplate();
+		}
 		return new ResponseEntity<List<Person>>(ldapTemplate.search(query, mapper),HttpStatus.OK);
 	}
 	
 	@GetMapping("/employee/{username}")
 	public ResponseEntity<Person> queryone(@PathVariable(value="username") String username) {
-		LdapQuery query = query().base("").attributes("sn","distinguishedName","sAMAccountName","userPassword","givenName","displayName","telephoneNumber","department","company","mail","manager","streetAddress","description","title","l","st","info","wWWHomePage","postOfficeBox","pager").where("objectclass")
+		LdapQuery query = query().base("").attributes("sn","distinguishedName","sAMAccountName","userPassword","givenName","displayName","telephoneNumber","department","company","mail","manager","streetAddress","description","title","l","st","info","wWWHomePage","postOfficeBox","pager","physicalDeliveryOfficeName").where("objectclass")
 				.is("person").and("sAMAccountName").like(username);
 		AttributesMapper<Person> mapper = new AttributesMapper<Person>() {
 			
 			public Person mapFromAttributes(Attributes attrs) throws javax.naming.NamingException {
 				NamingEnumeration<? extends Attribute> attributes = attrs.getAll();
-				System.out.println(attrs.size());
+				//System.out.println(attrs.size());
 				Person ret = new Person();
 				
-				ArrayList<String> s = new ArrayList<String> (List.of((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(",")));
+				ArrayList<String> s = new ArrayList<String> (Arrays.asList((null != attrs.get("distinguishedName") ? (String) attrs.get("distinguishedName").get() : "").split(",")));
 				System.out.println(s);
 				if(s.size() > 1) {
 					s.remove(0);
@@ -196,9 +241,15 @@ public class HomeResource {
 				ret.setBirthDate(null != attrs.get("pager") ? (String) attrs.get("pager").get() : "");
 				ret.setFunction(null != attrs.get("title") ? (String) attrs.get("title").get() : "");
 				
+				ret.setLocationCode(null != attrs.get("physicalDeliveryOfficeName") ? (String) attrs.get("physicalDeliveryOfficeName").get() : "");
+				
 				return ret;
 			}
 		};
+		
+		if(ldapTemplate == null) {
+			ldapTemplate = setLdapTemplate();
+		}
 		
 		if(ldapTemplate.search(query, mapper).size() > 0) {
 			return new ResponseEntity<Person>(ldapTemplate.search(query, mapper).get(0),HttpStatus.OK);
@@ -209,6 +260,17 @@ public class HomeResource {
 	
 	@PutMapping("/employee")
 	public ResponseEntity add(@RequestBody Person data) {
+		
+		String[] usernames = data.getUserNames();
+		String username = data.getUserName();
+		for (int i = 0 ; i < usernames.length; i++) {
+			if(!queryone(usernames[i]).hasBody()) {
+				username = usernames[i];
+				break;
+			}
+		}
+		
+		
 		try {
 			System.out.println(data.toString());
 			
@@ -233,7 +295,7 @@ public class HomeResource {
 			attrs.put("sAMAccountType","805306368");
 			
 			attrs.put("company",data.getCompany());
-			attrs.put("mail",data.getEmail());
+			attrs.put("mail",username + "@gafisact.com.br");
 			
 			Person sup = queryone(data.getManager()).getBody();
 			
@@ -243,11 +305,11 @@ public class HomeResource {
 			attrs.put("description",data.getDescription());
 			attrs.put("info",data.getJob());
 			
-			attrs.put("userPrincipalName",data.getEmail());
+			attrs.put("userPrincipalName",username + "@gafisact.com.br");
 			
-			attrs.put("mailNickname",data.getEmail().split("@")[0]);
+			attrs.put("mailNickname",username);
 			
-			attrs.put("sAMAccountName", data.getUserName());
+			attrs.put("sAMAccountName", username);
 			
 			attrs.put("distinguishedName","CN=" + data.getFullName() + "," + data.getStructure() + "," + Base);
 			
@@ -259,15 +321,21 @@ public class HomeResource {
 			attrs.put("l",data.getOfficeCity());
 			attrs.put("st",data.getOfficeState());
 			
+			attrs.put("physicalDeliveryOfficeName",data.getLocationCode());
+			
 			Name dn = buildPersonDn(data);
 			
 			System.out.println(dn.toString());
+			
+			if(ldapTemplate == null) {
+				ldapTemplate = setLdapTemplate();
+			}
 			
 			ldapTemplate.bind(dn,null,attrs);
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<String[]>(new String[]{},HttpStatus.OK);
 	}
 	
 	@PostMapping("/employee/{username}")
@@ -450,10 +518,19 @@ public class HomeResource {
 			} else {
 				attrs.put("l",original.getOfficeCity());
 			}
+			
+			if(data.getLocationCode() != "") {
+				attrs.put("physicalDeliveryOfficeName",data.getLocationCode());
+			} else {
+				attrs.put("physicalDeliveryOfficeName",original.getLocationCode());
+			}
 
-			attrs.put("st",data.getOfficeState());
 			
 			Name dn = buildPersonDn(structure,fullName);
+			
+			if(ldapTemplate == null) {
+				ldapTemplate = setLdapTemplate();
+			}
 			
 			ldapTemplate.unbind(odn);
 			ldapTemplate.bind(dn, null, attrs);
@@ -520,6 +597,13 @@ public class HomeResource {
 			
 			attrs.put("l",original.getOfficeCity());
 			attrs.put("st",original.getOfficeState());
+			
+			attrs.put("physicalDeliveryOfficeName",original.getLocationCode());
+			
+			
+			if(ldapTemplate == null) {
+				ldapTemplate = setLdapTemplate();
+			}
 			
 			Name dn = buildDisabledDn(original);
 			ldapTemplate.unbind(odn);

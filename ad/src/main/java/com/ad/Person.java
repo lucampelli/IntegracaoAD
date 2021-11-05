@@ -5,7 +5,8 @@ public class Person {
 	protected String LastName;
 	protected String DisplayName;
 	protected String Structure;
-	protected String[] UserName;
+	protected String[] UserNames;
+	protected String UserName;
 	protected String Email;
 	protected String TelephoneNumber;
 	protected String PersonNumber;
@@ -23,7 +24,7 @@ public class Person {
 	protected String BirthDate;
 	protected String LocationCode;
 
-	public Person(String firstName, String lastName, String displayName, String structure, String[] userName,
+	public Person(String firstName, String lastName, String displayName, String structure, String[] userNames,String userName,
 			String email, String telephoneNumber, String personNumber, String department, String job, String description,
 			String company, String manager, String address, String rg, String cpf, String officeState,
 			String officeCity, String function, String birthDate, String locationCode) {
@@ -33,6 +34,7 @@ public class Person {
 		DisplayName = displayName;
 		Structure = structure;
 		UserName = userName;
+		UserNames = userNames;
 		Email = email;
 		TelephoneNumber = telephoneNumber;
 		PersonNumber = personNumber;
@@ -50,42 +52,15 @@ public class Person {
 		BirthDate = birthDate;
 		LocationCode = locationCode;
 	}
-	
-	public Person(String firstName, String lastName, String displayName, String structure, String userName,
-			String email, String telephoneNumber, String personNumber, String department, String job, String description,
-			String company, String manager, String address, String rg, String cpf, String officeState,
-			String officeCity, String function, String birthDate, String locationCode) {
-		super();
-		FirstName = firstName;
-		LastName = lastName;
-		DisplayName = displayName;
-		Structure = structure;
-		UserName = new String[]{userName};
-		Email = email;
-		TelephoneNumber = telephoneNumber;
-		PersonNumber = personNumber;
-		Department = department;
-		Job = job;
-		Description = description;
-		Company = company;
-		Manager = manager;
-		Address = address;
-		RG = rg;
-		CPF = cpf;
-		OfficeState = officeState;
-		OfficeCity = officeCity;
-		Function = function;
-		BirthDate = birthDate;
-		LocationCode = locationCode;
-	}
-	
+		
 	public Person() {
 		super();
 		FirstName = "";
 		LastName = "";
 		DisplayName = "";
 		Structure = "";
-		UserName = new String[]{""};
+		UserNames = new String[]{""};
+		UserName = "";
 		Email = "";
 		TelephoneNumber = "";
 		PersonNumber = "";
@@ -105,7 +80,7 @@ public class Person {
 	@Override
 	public String toString() {
 		return "Person [FirstName=" + FirstName + ", LastName=" + LastName + ", DisplayName=" + DisplayName
-				+ ", Structure=" + Structure + ", UserName=" + UserName[0] + ", Email=" + Email + ", Telefone=" + TelephoneNumber
+				+ ", Structure=" + Structure + ", UserName=" + UserName + ", Email=" + Email + ", Telefone=" + TelephoneNumber
 				+ ", PersonNumber=" + PersonNumber + ", Department=" + Department + ", Job=" + Job + ", Description="
 				+ Description + ", Company=" + Company + ", Manager=" + Manager + ", Address=" + Address + ", RG=" + RG
 				+ ", CPF=" + CPF + ", OfficeState=" + OfficeState + ", OfficeCity=" + OfficeCity + ", Function="
@@ -151,16 +126,16 @@ public class Person {
 		Structure = structure;
 	}
 	public String[] getUserNames() {
-		return UserName;
+		return UserNames;
 	}
 	public String getUserName() {
-		return UserName[0];
+		return UserName;
 	}
 	public void setUserName(String userName) {
-		UserName = new String[]{userName};
-	}
-	public void setUserName(String[] userName) {
 		UserName = userName;
+	}
+	public void setUserNames(String[] userNames) {
+		UserNames = userNames;
 	}
 	public String getEmail() {
 		return Email;

@@ -52,10 +52,10 @@ public class HomeResource {
 	public LdapTemplate setLdapTemplate() {
 		
 		System.out.println("Setting Certificate Trust Store");
-		System.setProperty("javax.debug", "ssl");
-        System.setProperty("javax.net.ssl.trustStore", "/app/cacerts.jks");
-        System.setProperty("javax.net.ssl.trustStorePassword","changeit");
-        System.out.println(System.getProperty("javax.net.ssl.trustStore"));
+		//System.setProperty("javax.net.debug", "ssl");
+        //System.setProperty("javax.net.ssl.trustStore", "/app/cacerts.jks");
+        //System.setProperty("javax.net.ssl.trustStorePassword","changeit");
+        //System.out.println(System.getProperty("javax.net.ssl.trustStore"));
 		LdapContextSource contextSource = new LdapContextSource();
 		
         //contextSource.setUrls(new String[]{"ldaps://SSPDC-01.gafisact.com.br:636","ldaps://SSPDC-02.gafisact.com.br:636"});
@@ -70,10 +70,10 @@ public class HomeResource {
         LdapTemplate ldapTemplate = new LdapTemplate(contextSource);
 
         try {
-        	System.out.println("Authentication");
-        	System.out.println(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"));
+        	//System.out.println("Authentication");
+        	//System.out.println(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"));
 
-            contextSource.getContext(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"), env.getProperty("spring.ldap.password"));
+            //contextSource.getContext(env.getProperty("spring.ldap.username") + ","+ env.getProperty("spring.ldap.base"), env.getProperty("spring.ldap.password"));
         	
             ldapTemplate.afterPropertiesSet();
                        
@@ -262,7 +262,7 @@ public class HomeResource {
 	public ResponseEntity add(@RequestBody Person data) {
 		
 		String[] usernames = data.getUserNames();
-		String username = data.getUserName();
+		String username = usernames[0];
 		for (int i = 0 ; i < usernames.length; i++) {
 			if(!queryone(usernames[i]).hasBody()) {
 				username = usernames[i];
@@ -272,7 +272,6 @@ public class HomeResource {
 		
 		
 		try {
-			System.out.println(data.toString());
 			
 			Attributes attrs = new BasicAttributes();
 			BasicAttribute ocattr = new BasicAttribute("objectclass");
@@ -325,7 +324,7 @@ public class HomeResource {
 			
 			Name dn = buildPersonDn(data);
 			
-			System.out.println(dn.toString());
+			//System.out.println(dn.toString());
 			
 			if(ldapTemplate == null) {
 				ldapTemplate = setLdapTemplate();
@@ -335,7 +334,7 @@ public class HomeResource {
 		} catch (Exception e) {
 			return new ResponseEntity<String>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<String[]>(new String[]{},HttpStatus.OK);
+		return new ResponseEntity<Person>(queryone(username).getBody(),HttpStatus.OK);
 	}
 	
 	@PostMapping("/employee/{username}")
